@@ -1,17 +1,121 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QKeyEvent>
+#include<QDebug>
+
+#include "game.h"
+#include "unit.h"
+
+
+//=============================================================
+//-------------------------------------------------------------
+//-------------------------------------------------------------
+//------------- methods of class  GameTimeCounter---------------
+
+GameTimeCounter::GameTimeCounter()
+{
+    GameTime.sec=0;
+    GameTime.min=0;
+    GameTime.hour=0;
+}
+
+GameTimeCounter::~GameTimeCounter()
+{
+
+}
+
+TimeData GameTimeCounter::getGameTime()
+{
+
+    return GameTime;
+}
+
+bool GameTimeCounter::CountUp()
+{
+    GameTime.sec++;
+    if(GameTime.sec==60){
+        GameTime.min++;
+        GameTime.sec=0;
+    }
+    if(GameTime.min==60){
+        GameTime.hour++;
+        GameTime.min=0;
+    }
+    if(GameTime.hour==24)
+        GameTime.hour=0;
+    return true;
+}
+
+bool GameTimeCounter::CountDown()
+{
+
+    return true;
+}
+
+bool GameTimeCounter::ResetCount()
+{
+    GameTime.sec=0;
+    GameTime.min=0;
+    GameTime.hour=0;
+
+    return true;
+}
+
+//==============================================================
+
+
+
+//==============================================================
+//-------------------------------------------------------------
+//-------------------------------------------------------------
+//------------- methods of class  MainWindow ------------------
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    PST=game_stop;
+
+    TimeBase=200;
+    LevelTimeStep=20;
+    GamePause=5;
+    delay_cnt=0;
+
+    gameFild.border_x_min=0;
+    gameFild.border_x_max=50;
+    gameFild.border_y_min=0;
+    gameFild.border_y_max=50;
+
+    GameController=new Game(gameFild,6,0);
+
+
     ui->setupUi(this);
+
+
 }
 
 MainWindow::~MainWindow()
 {
+    delete GameController;
     delete ui;
 }
+
+void MainWindow::keyPressEvent(QKeyEvent *pe)
+{
+
+    switch ( pe->key()){
+    case Qt::Key_Right:
+        qDebug()<<"Pres Key_Right button";
+        break;
+
+    default:
+        break;
+    }
+
+}
+
+//==============================================================
+
 
 
 
@@ -45,8 +149,7 @@ MainWindow::~MainWindow()
 
 //-----------------------------
 #include "mainwindow.h"
-#include "game.h"
-#include "unit.h"
+
 
 //-----------------------------------------------------
 //-----------------------------------------------------
@@ -443,60 +546,6 @@ void MainWindow::_PreRender()
 
 
     area.queue_draw();
-}
-
-//-------------------------------------------------------------
-//-------------------------------------------------------------
-//-------------------------------------------------------------
-//------------- methods of class  GameTimeCounter---------------
-
-GameTimeCounter::GameTimeCounter()
-{
-    GameTime.sec=0;
-    GameTime.min=0;
-    GameTime.hour=0;
-}
-
-GameTimeCounter::~GameTimeCounter()
-{
-
-}
-
-TimeData GameTimeCounter::getGameTime()
-{
-
-    return GameTime;
-}
-
-bool GameTimeCounter::CountUp()
-{
-    GameTime.sec++;
-    if(GameTime.sec==60){
-        GameTime.min++;
-        GameTime.sec=0;
-    }
-    if(GameTime.min==60){
-        GameTime.hour++;
-        GameTime.min=0;
-    }
-    if(GameTime.hour==24)
-        GameTime.hour=0;
-    return true;
-}
-
-bool GameTimeCounter::CountDown()
-{
-
-    return true;
-}
-
-bool GameTimeCounter::ResetCount()
-{
-    GameTime.sec=0;
-    GameTime.min=0;
-    GameTime.hour=0;
-
-    return true;
 }
 
 

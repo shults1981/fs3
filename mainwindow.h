@@ -3,6 +3,36 @@
 
 #include <QMainWindow>
 
+#include "game.h"
+#include "unit.h"
+
+//======================================================
+typedef struct _timedata_
+    {
+        unsigned int sec;
+        unsigned int min;
+        unsigned int hour;
+    } TimeData;
+
+//======================================================
+class GameTimeCounter
+{
+private:
+    TimeData GameTime;
+
+public:
+    GameTimeCounter();
+    ~GameTimeCounter();
+
+    TimeData getGameTime();
+    bool	CountUp();
+    bool	CountDown();
+    bool	ResetCount();
+};
+
+//=======================================================
+
+
 namespace Ui {
 class MainWindow;
 }
@@ -16,8 +46,26 @@ public:
     ~MainWindow();
 
 private:
+
+    Fild gameFild;
+    Game *GameController;
+    MoveDirection mvf;
+    GameTimeCounter GTC;
+
+    qint32 timerSource;
+    qint32 TimeBase;
+    qint32 LevelTimeStep;
+    qint32 GamePause;
+    qint32 delay_cnt;
+
+    GameStatus PST;
+
+
     Ui::MainWindow *ui;
+void    keyPressEvent (QKeyEvent* pe);
 };
+
+//==============================================================
 
 #endif // MAINWINDOW_H
 
@@ -42,36 +90,10 @@ private:
 
 
 //-----------------------------
-#include "game.h"
-#include "unit.h"
-
-
-
-//==================================================
-typedef struct _timedata_
-    {
-        unsigned int sec;
-        unsigned int min;
-        unsigned int hour;
-    } TimeData;
 
 
 
 
-class GameTimeCounter
-{
-private:
-    TimeData GameTime;
-
-public:
-    GameTimeCounter();
-    ~GameTimeCounter();
-
-    TimeData getGameTime();
-    bool	CountUp();
-    bool	CountDown();
-    bool	ResetCount();
-};
 
 
 //==================================================
