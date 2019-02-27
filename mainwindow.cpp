@@ -103,16 +103,57 @@ MainWindow::~MainWindow()
 void MainWindow::keyPressEvent(QKeyEvent *pe)
 {
 
-    switch ( pe->key()){
-    case Qt::Key_Right:
-        qDebug()<<"Pres Key_Right button";
-        break;
+        if (pe->key()==Qt::Key_M){
+            PST=game_stop;
+        }
 
-    default:
-        break;
-    }
+
+        if (PST==game_stop||PST==game_over){
+            switch (pe->key())  {
+                case Qt::Key_E:
+                    PST=game_exit;
+                    break;
+                case Qt::Key_N:
+                    PST=game_new;
+                    PST=game_on;
+                    break;
+                case Qt::Key_C:
+                    PST=game_on;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if (PST==game_on){
+            switch ( pe->key()){
+            case Qt::Key_Left:
+                mvf=Left;
+                qDebug()<<"Pres Key_Left button";
+                break;
+            case Qt::Key_Right:
+                mvf=Right;
+                qDebug()<<"Pres Key_Right button";
+                break;
+            case Qt::Key_Up:
+                mvf=Up;
+                qDebug()<<"Pres Key_Up button";
+                break;
+            case Qt::Key_Down:
+                mvf=Down;
+                qDebug()<<"Pres Key_Down button";
+                break;
+            default:
+                break;
+            }
+        }
 
 }
+
+
+
+
+
 
 //==============================================================
 
