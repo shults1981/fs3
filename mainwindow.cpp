@@ -91,6 +91,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->setupUi(this);
 
+    timer=new QTimer;
+    connect(timer, SIGNAL(timeout()), this, SLOT(_tic()));
+    timer->start(200);
 
 }
 
@@ -151,6 +154,106 @@ void MainWindow::keyPressEvent(QKeyEvent *pe)
 }
 
 
+void    MainWindow::paintEvent(QPaintEvent *event)
+{
+    QPainter painter(this);
+   painter.drawEllipse(100, 50, 150, 150);
+
+
+
+}
+
+void MainWindow::_tic()
+{
+    Main_Loop();
+    _PreRender();
+
+
+}
+
+bool    MainWindow::Main_Loop()
+{
+    switch (PST){
+        case game_exit:
+            GameController->setGameStatus(game_over);
+            GameController->setGameStatus(game_exit);
+            //timerSource.disconnect();
+            //OnQuit();
+            break;
+        case game_new:
+            GameController->setGameStatus(game_stop);
+            GameController->setGameStatus(game_over);
+//			GameController->setGameStatus(game_new);
+            mvf=static_cast<MoveDirection>(0);
+//			delay_cnt=0;
+            if ((delay_cnt)==1){
+                GameController->setGameStatus(game_new);
+                GameController->setGameStatus(game_on);
+                PST=game_on;
+                delay_cnt=0;
+            }
+            else
+                delay_cnt++;
+            //timerSource.disconnect();
+            //timerSource=Glib::signal_timeout().connect( sigc::mem_fun(*this, &MainWindow::Tic), TimeBase );
+            GTC.ResetCount();
+            break;
+        case game_stop:
+            GameController->setGameStatus(game_stop);
+            delay_cnt=0;
+            break;
+        case game_on:
+
+            if(GameController->getGameStatus()!=game_over){
+                GameController->setGameStatus(game_on);
+            }
+            if(GameController->getGameStatus()==game_over)
+                PST=game_over;
+
+            break;
+        case game_over:
+            if ((delay_cnt++)>GamePause)
+                PST=game_stop;
+            break;
+
+        default:
+            break;
+    }
+
+        if (GameController->getGameStatus()==game_on)
+        {
+                GameController->SnakeControl(mvf);
+                GameController->SnakeMoveToOneStep();
+                GTC.CountUp();
+        }
+
+        if (GameController->getGameStatus()==game_new_level){
+            PST=game_new_level;
+            if ((delay_cnt++)>GamePause){
+
+                GameController->setGameStatus(game_stop);
+                GameController->setGameStatus(game_over);
+                GameController->setGameStatus(game_new);
+                GameController->setGameStatus(game_on);
+                mvf=static_cast<MoveDirection>(0);
+                delay_cnt=0;
+                PST=game_on;
+                //timerSource.disconnect();
+                //timerSource=Glib::signal_timeout().connect( sigc::mem_fun(*this, &MainWindow::Tic),
+                //                       TimeBase-(GameController->getGameLevel()-1)*LevelTimeStep);
+            }
+        }
+
+        qDebug()<<"Game tic. PST-"<<PST;
+
+        return true;
+}
+
+void   MainWindow::_PreRender()
+{
+
+
+}
 
 
 
@@ -230,7 +333,7 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 
     X_max=width;
     Y_max=height;
-
+    qDebug()<<"Game tic. PST-"<<PST;
     scr_border_x_min=(X_max-9*X_max/10);
     scr_border_x_max=(X_max-1*X_max/10);
     scr_border_y_min=(Y_max-9*Y_max/10);

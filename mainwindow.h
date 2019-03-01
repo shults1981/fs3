@@ -2,6 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include<QPainter>
+#include <QTime>
+#include<QTimer>
 
 #include "game.h"
 #include "unit.h"
@@ -19,6 +22,7 @@ class GameTimeCounter
 {
 private:
     TimeData GameTime;
+
 
 public:
     GameTimeCounter();
@@ -59,10 +63,18 @@ private:
     qint32 delay_cnt;
 
     GameStatus PST;
+    QTimer *timer;
 
 
     Ui::MainWindow *ui;
 void    keyPressEvent (QKeyEvent* pe);
+void    paintEvent(QPaintEvent *event);
+bool    Main_Loop();
+void   _PreRender();
+private slots:
+
+void _tic();
+
 };
 
 //==============================================================
