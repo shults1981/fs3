@@ -163,7 +163,6 @@ void    MainWindow::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     Point pen;
     int width, height;
-//    GdkRGBA color;
 
     int  x,y;
     int i,k,m;
@@ -183,8 +182,8 @@ void    MainWindow::paintEvent(QPaintEvent *event)
     scr_border_y_min=(Y_max-9*Y_max/10);
     scr_border_y_max=(Y_max-1*Y_max/10);
 
-    hStep=(float)(scr_border_x_max-scr_border_x_min)/(float)(gameFild.border_x_max-gameFild.border_x_min);
-    vStep=(float)(scr_border_y_max-scr_border_y_min)/(float)(gameFild.border_y_max-gameFild.border_y_min);
+    hStep=static_cast<float>(scr_border_x_max-scr_border_x_min)/static_cast<float>(gameFild.border_x_max-gameFild.border_x_min);
+    vStep=static_cast<float>(scr_border_y_max-scr_border_y_min)/static_cast<float>(gameFild.border_y_max-gameFild.border_y_min);
 
     //---------- Make game fild ----------------------
     painter.setPen(QPen(Qt::black,1,Qt::SolidLine));
@@ -280,6 +279,8 @@ void MainWindow::_tic()
 {
    Main_Loop();
     _PreRender();
+    this->repaint();
+//    emit(paintEvent());
 
 
 }
