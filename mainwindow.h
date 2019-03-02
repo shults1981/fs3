@@ -61,19 +61,22 @@ private:
     qint32 LevelTimeStep;
     qint32 GamePause;
     qint32 delay_cnt;
+    qint32 X_max,Y_max;
 
     GameStatus PST;
     QTimer *timer;
 
+//    Fild pole;
+
 
     Ui::MainWindow *ui;
-void    keyPressEvent (QKeyEvent* pe);
-void    paintEvent(QPaintEvent *event);
-bool    Main_Loop();
-void   _PreRender();
+    void    keyPressEvent (QKeyEvent* pe);
+    void    paintEvent(QPaintEvent *event);
+    bool    Main_Loop();
+    void   _PreRender();
 private slots:
 
-void _tic();
+    void _tic();
 
 };
 

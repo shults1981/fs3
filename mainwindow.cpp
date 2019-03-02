@@ -89,11 +89,15 @@ MainWindow::MainWindow(QWidget *parent) :
     GameController=new Game(gameFild,6,0);
 
 
+//    pole=GameController->getGameFild();
+
+
     ui->setupUi(this);
 
     timer=new QTimer;
     connect(timer, SIGNAL(timeout()), this, SLOT(_tic()));
-    timer->start(200);
+    timer->start(TimeBase);
+
 
 }
 
@@ -118,7 +122,7 @@ void MainWindow::keyPressEvent(QKeyEvent *pe)
                     break;
                 case Qt::Key_N:
                     PST=game_new;
-                    PST=game_on;
+                  //  PST=game_on;
                     break;
                 case Qt::Key_C:
                     PST=game_on;
@@ -157,7 +161,116 @@ void MainWindow::keyPressEvent(QKeyEvent *pe)
 void    MainWindow::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-   painter.drawEllipse(100, 50, 150, 150);
+    Point pen;
+    int width, height;
+//    GdkRGBA color;
+
+    int  x,y;
+    int i,k,m;
+    int scr_border_x_min,scr_border_x_max,scr_border_y_min,scr_border_y_max;
+    float hStep,vStep;
+
+    QChar str_BUF1[5],str_BUF2[5],str_BUF3[8];
+
+    width=this->width();
+    height=this->height();
+
+    X_max=width;
+    Y_max=height;
+
+    scr_border_x_min=(X_max-9*X_max/10);
+    scr_border_x_max=(X_max-1*X_max/10);
+    scr_border_y_min=(Y_max-9*Y_max/10);
+    scr_border_y_max=(Y_max-1*Y_max/10);
+
+    hStep=(float)(scr_border_x_max-scr_border_x_min)/(float)(gameFild.border_x_max-gameFild.border_x_min);
+    vStep=(float)(scr_border_y_max-scr_border_y_min)/(float)(gameFild.border_y_max-gameFild.border_y_min);
+
+    //---------- Make game fild ----------------------
+    painter.setPen(QPen(Qt::black,1,Qt::SolidLine));
+
+    painter.drawLine(QPointF(scr_border_x_min,scr_border_y_min),QPointF(scr_border_x_max+hStep,scr_border_y_min));
+
+    painter.drawLine(QPointF(scr_border_x_max+hStep,scr_border_y_min),QPointF(scr_border_x_max+hStep,scr_border_y_max+vStep));
+
+    painter.drawLine(QPointF(scr_border_x_max+hStep,scr_border_y_max+vStep),QPointF(scr_border_x_min,scr_border_y_max+vStep));
+
+    painter.drawLine(QPointF(scr_border_x_min,scr_border_y_max+vStep),QPointF(scr_border_x_min,scr_border_y_min));
+
+    painter.drawText(scr_border_x_min,scr_border_y_min-5, " Game SNAKE  ");
+
+
+    //  =====================================================
+
+        if (PST==game_stop)
+        {
+            //            // -- menu border
+            painter.drawLine(QPointF(scr_border_x_max/2-25,scr_border_y_max/2-10),QPointF(scr_border_x_max/2+65,scr_border_y_max/2-10));
+            painter.drawLine(QPointF(scr_border_x_max/2+65,scr_border_y_max/2-10),QPointF(scr_border_x_max/2+65,scr_border_y_max/2+45));
+            painter.drawLine(QPointF(scr_border_x_max/2+65,scr_border_y_max/2+45),QPointF(scr_border_x_max/2-25,scr_border_y_max/2+45));
+            painter.drawLine(QPointF(scr_border_x_max/2-25,scr_border_y_max/2+45),QPointF(scr_border_x_max/2-25,scr_border_y_max/2-10));
+//            // -- menu text
+            painter.drawText(scr_border_x_max/2-20,scr_border_y_max/2,"       MENU:");
+            painter.drawText(scr_border_x_max/2-20,scr_border_y_max/2+10,"NEW GAME.....'n'");
+            painter.drawText(scr_border_x_max/2-20,scr_border_y_max/2+20,"MENU/PAUSE..'m'");
+            painter.drawText(scr_border_x_max/2-20,scr_border_y_max/2+30,"CONTINUE.....'c'");
+            painter.drawText(scr_border_x_max/2-20,scr_border_y_max/2+40,"EXIT......'e'");
+        }
+
+
+//        if (PST==game_on)
+//        {
+
+//            cr->set_line_width(1.5);
+//            if (unit_rabbit.getElement(0,pen)){
+//                    cr->rectangle(	scr_border_x_min+pen._x*hStep,
+//                    scr_border_y_min+pen._y*vStep,
+//                    hStep,
+//                    vStep);
+//            }
+
+//            for(i=0;i<unit_snake.getLen();i++ )
+//            {
+//                if (unit_snake.getLen()){
+//                    unit_snake.getElement(i,pen);
+//                    cr->rectangle(	scr_border_x_min+pen._x*hStep,
+//                            scr_border_y_min+pen._y*vStep,
+//                            hStep,
+//                            vStep);
+//                }
+//            }
+
+//            //====  information ====
+//            sprintf (str_BUF1,"%d",Score);
+//            cr->move_to(scr_border_x_min,scr_border_y_max+15);
+//            cr->show_text("Score-");
+//            cr->move_to(scr_border_x_min+35,scr_border_y_max+15);
+//            cr->show_text(str_BUF1);
+
+//            sprintf (str_BUF2,"%d",Level);
+//            cr->move_to(scr_border_x_min,scr_border_y_max+25);
+//            cr->show_text("Level-");
+//            cr->move_to(scr_border_x_min+35,scr_border_y_max+25);
+//            cr->show_text(str_BUF2);
+
+//            sprintf(str_BUF3,"%d:%d:%d",btmr.hour,btmr.min,btmr.sec);
+
+//            cr->move_to(scr_border_x_min+100,scr_border_y_max+15);
+//            cr->show_text("Time-");
+//            cr->move_to(scr_border_x_min+135,scr_border_y_max+15);
+//            cr->show_text(str_BUF3);
+//        }
+
+        if (PST==game_new_level)
+        {
+            painter.drawText(scr_border_x_max/2-30,scr_border_y_max/2-20,"N E X T    L E V E L !!!!!");
+        }
+
+        if (PST==game_over)
+        {
+             painter.drawText(scr_border_x_max/2-30,scr_border_y_max/2-20,"G A M E   O V E R !!!!!");
+
+        }
 
 
 
@@ -165,7 +278,7 @@ void    MainWindow::paintEvent(QPaintEvent *event)
 
 void MainWindow::_tic()
 {
-    Main_Loop();
+   Main_Loop();
     _PreRender();
 
 
@@ -177,15 +290,13 @@ bool    MainWindow::Main_Loop()
         case game_exit:
             GameController->setGameStatus(game_over);
             GameController->setGameStatus(game_exit);
-            //timerSource.disconnect();
-            //OnQuit();
+            timer->stop();
+            this->close();
             break;
         case game_new:
             GameController->setGameStatus(game_stop);
             GameController->setGameStatus(game_over);
-//			GameController->setGameStatus(game_new);
             mvf=static_cast<MoveDirection>(0);
-//			delay_cnt=0;
             if ((delay_cnt)==1){
                 GameController->setGameStatus(game_new);
                 GameController->setGameStatus(game_on);
@@ -194,8 +305,8 @@ bool    MainWindow::Main_Loop()
             }
             else
                 delay_cnt++;
-            //timerSource.disconnect();
-            //timerSource=Glib::signal_timeout().connect( sigc::mem_fun(*this, &MainWindow::Tic), TimeBase );
+            timer->stop();
+            timer->start(TimeBase );
             GTC.ResetCount();
             break;
         case game_stop:
@@ -238,13 +349,13 @@ bool    MainWindow::Main_Loop()
                 mvf=static_cast<MoveDirection>(0);
                 delay_cnt=0;
                 PST=game_on;
-                //timerSource.disconnect();
-                //timerSource=Glib::signal_timeout().connect( sigc::mem_fun(*this, &MainWindow::Tic),
-                //                       TimeBase-(GameController->getGameLevel()-1)*LevelTimeStep);
+                timer->stop();
+                timer->start(TimeBase-(GameController->getGameLevel()-1)*LevelTimeStep);
+
             }
         }
 
-        qDebug()<<"Game tic. PST-"<<PST;
+        qDebug()<<"Prg. tic. PST-"<<PST;
 
         return true;
 }
