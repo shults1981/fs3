@@ -123,7 +123,6 @@ void MainWindow::keyPressEvent(QKeyEvent *pe)
                     break;
                 case Qt::Key_N:
                     PST=game_new;
-                  //  PST=game_on;
                     break;
                 case Qt::Key_C:
                     PST=game_on;
@@ -298,7 +297,7 @@ bool    MainWindow::Main_Loop()
                 GameController->setGameStatus(game_on);
             }
             if(GameController->getGameStatus()==game_over)
-                PST=game_over;
+                PST=game_stop;
 
             break;
         case game_over:
